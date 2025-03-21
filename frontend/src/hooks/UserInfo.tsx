@@ -5,7 +5,7 @@ export const useUserInfo = () => {
     const { error, data, isLoading } = useQuery({
         queryKey: ['userInfo'],
         queryFn: () =>
-            fetch(`${import.meta.env.VITE_API_URL}/auth/check`, {
+            fetch(`/auth/check`, {
                 method: "GET",
                 headers: { "Content-Type": "application/json" },
                 credentials: "include",

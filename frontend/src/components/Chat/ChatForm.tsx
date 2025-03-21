@@ -42,7 +42,7 @@ function ChatForm() {
         
         if (file) formdata.append("image", file);
 
-        const response = await fetch(`${import.meta.env.VITE_API_URL}/chat/sendmessage/${id}`, {
+        const response = await fetch(`/chat/sendmessage/${id}`, {
             method: "POST",
             credentials: "include",
             body: formdata

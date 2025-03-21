@@ -10,7 +10,7 @@ function ChatHeader() {
     const { data, isLoading } = useQuery({
         queryKey: ["chatHeaderUser", id],
         queryFn: async () => {
-            const response = await fetch(`${import.meta.env.VITE_API_URL}/chat/users/${id}`, {
+            const response = await fetch(`/chat/users/${id}`, {
                 method: "GET",
                 headers: { "Content-Type": "application/json" },
                 credentials: "include",

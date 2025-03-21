@@ -4,7 +4,7 @@ export const useSidebarUsers = () => {
     const { error, data, isLoading } = useQuery({
         queryKey: ['sidebarUsers'],
         queryFn: () =>
-            fetch(`${import.meta.env.VITE_API_URL}/chat/users`, {
+            fetch(`/chat/users`, {
                 method: "GET",
                 headers: { "Content-Type": "application/json" },
                 credentials: "include",

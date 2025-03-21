@@ -26,7 +26,7 @@ function ProfilePicture() {
             setSelectedFile(base64Image)
             const formdata = new FormData();
             formdata.append("profilePic", file);
-            const response = await fetch(`${import.meta.env.VITE_API_URL}/auth/profile`, {
+            const response = await fetch(`/auth/profile`, {
                 method: "PUT",
                 body: formdata,
                 credentials: "include"
