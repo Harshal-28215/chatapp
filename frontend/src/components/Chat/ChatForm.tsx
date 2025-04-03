@@ -59,7 +59,7 @@ function ChatForm() {
     }
 
     return (
-        <form className='flex gap-3 p-3 justify-center items-center absolute bottom-0 w-full' onSubmit={handleformSubmit}>
+        <form className='flex gap-3 p-3 justify-center items-center absolute sm:bottom-0 w-full' onSubmit={handleformSubmit}>
             {
                 selectedFile &&
                 <div className='absolute bottom-[65px] left-[10px] rounded-md'>

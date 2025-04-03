@@ -1,4 +1,5 @@
 import { BrowserRouter, Routes, Route } from "react-router";
+import { useEffect } from "react";
 import Login from "./pages/Login";
 import SignUp from "./pages/SignUp";
 import Navbar from "./components/Navbar/Navbar";
@@ -10,25 +11,24 @@ import { useUserInfo } from "./hooks/UserInfo";
 import { useMyContext } from "./context/chatappContext";
 import HomeLoading from "./components/Loading/HomeLoading";
 
-
 function App() {
   const { data, error, isLoading } = useUserInfo();
   const { connectSocket } = useMyContext();
 
   if (error) {
-    console.error(error)
+    console.error(error);
   }
 
   if (isLoading) {
-    return <HomeLoading />
+    return <HomeLoading />;
   }
 
-  const message = data?.message as string;
+  const message = data?.message ?? "";
+  const userId = data?.data?._id;
 
-  const userId = data?.data?._id
-  if (userId) {
-    connectSocket(userId)
-  }
+    if (userId) {
+      connectSocket(userId);
+    }
 
   return (
 

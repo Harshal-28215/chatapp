@@ -1,25 +1,18 @@
 import { messageType, useMyContext } from "@/context/chatappContext";
-import { useEffect, useRef } from "react"
+import { useEffect, useRef, useState } from "react"
 import { useParams } from "react-router";
 
 function MessageBox() {
     const params = useParams<{ id: string }>();
     const id = params.id;
-    const { socketexist, setMessages, messages } = useMyContext();
-    const messagesEndRef = useRef<HTMLDivElement | null>(null)
+    const { socketexist, messages, setMessages } = useMyContext();
 
-    const url = import.meta.env.MODE === "development"? import.meta.env.VITE_API_URL:'/';
-    async function fetchMessages() {
-        await fetch(`${url}chat/${id}`, {
-            method: "GET",
-            headers: { "Content-Type": "application/json" },
-            credentials: "include",
-        }).then((res) => res.json()).then(data => setMessages(data.data))
-    }
+    const messagesEndRef = useRef<HTMLDivElement | null>(null)
+    const [isLoading, setIsLoading] = useState(false)
 
     function socketmessage() {
         socketexist?.on("newMessage", (data: messageType) => {
-            if (data?.senderId !== id ) return; 
+            if (data?.senderId !== id) return;
             setMessages(prevMessages => [...prevMessages, data])
         })
     }
@@ -33,16 +26,35 @@ function MessageBox() {
     }, [messages]);
 
     useEffect(() => {
-        fetchMessages();
-    }, [])
+        const url = import.meta.env.MODE === "development" ? import.meta.env.VITE_API_URL : '/';
+        async function fetchMessages() {
+            setIsLoading(true)
+            try {
+                await fetch(`${url}chat/${id}`, {
+                    method: "GET",
+                    headers: { "Content-Type": "application/json" },
+                    credentials: "include",
+                }).then((res) => res.json()).then(data => setMessages(data.data))
+            } catch (error) {
+                console.log(error);
+            } finally {
+                setIsLoading(false)
+            }
+        }
+        setTimeout(() => {
+            fetchMessages();
+        }, 0);
+        return () => {
+            setMessages([]);
+        };
+    }, [id]);
 
     useEffect(() => {
         socketmessage();
-        return () => {
-            socketexist?.off("newMessage")
-        }
-    }, [socketexist])
+    }, [socketexist, id])
 
+
+    isLoading && <div className="h-[100vh] flex justify-center items-center"><p>Loading...</p></div>
 
     return (
         <div className='p-3 space-y-2 h-[calc(100vh-195px)] overflow-y-auto'>

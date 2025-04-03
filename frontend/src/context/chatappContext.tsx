@@ -23,6 +23,9 @@ interface ContextProps {
 
   messages: messageType[];
   setMessages: (messages: messageType[] | ((prevMessages: messageType[]) => messageType[])) => void;
+
+  isOpen: boolean;
+  setIsOpen: (isOpen: boolean) => void;
 }
 
 const defaultContext: ContextProps = {
@@ -37,6 +40,9 @@ const defaultContext: ContextProps = {
 
   messages: [],
   setMessages: () => { },
+
+  isOpen: false,
+  setIsOpen: () => { },
 }
 
 const MyContext = createContext<ContextProps>(defaultContext);
@@ -46,6 +52,7 @@ export const MyProvider: React.FC<{ children: ReactNode }> = ({ children }): JSX
   const [socketexist, setSocketexist] = useState(defaultContext.socketexist);
   const [onlineUsers, setOnlineUsers] = useState(defaultContext.onlineUsers);
   const [messages, setMessages] = useState(defaultContext.messages);
+  const [isOpen,setIsOpen] = useState(false) 
 
   const socketurl = import.meta.env.MODE === "development"? 'http://localhost:5000' : "/" ;
 
@@ -78,7 +85,9 @@ export const MyProvider: React.FC<{ children: ReactNode }> = ({ children }): JSX
     socketexist,
     setSocketexist,
     messages,
-    setMessages
+    setMessages,
+    isOpen,
+    setIsOpen
   };
 
   return (
