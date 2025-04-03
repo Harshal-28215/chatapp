@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 
 export const useSidebarUsers = () => {
-    const url = import.meta.env.MODE === "development"? import.meta.env.VITE_API_URL:'/';
+    const url = import.meta.env.VITE_API_URL;
 
     const { error, data, isLoading } = useQuery({
         queryKey: ['sidebarUsers'],

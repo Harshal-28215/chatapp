@@ -9,7 +9,7 @@ function Navbar({ userId }: { userId: string | undefined }) {
     function handlelogout() {
         console.log('logout');
 
-        const url = import.meta.env.MODE === "development" ? import.meta.env.VITE_API_URL : '/';
+        const url = import.meta.env.VITE_API_URL;
 
 
         fetch(`${url}auth/logout`, {

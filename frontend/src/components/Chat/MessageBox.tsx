@@ -26,7 +26,7 @@ function MessageBox() {
     }, [messages]);
 
     useEffect(() => {
-        const url = import.meta.env.MODE === "development" ? import.meta.env.VITE_API_URL : '/';
+        const url = import.meta.env.VITE_API_URL;
         async function fetchMessages() {
             setIsLoading(true)
             try {

@@ -7,7 +7,7 @@ function ChatHeader() {
     const { onlineUsers } = useMyContext();
     const id = params.id;
 
-    const url = import.meta.env.MODE === "development"? import.meta.env.VITE_API_URL:'/';
+    const url = import.meta.env.VITE_API_URL;;
 
     const { data, isLoading } = useQuery({
         queryKey: ["chatHeaderUser", id],

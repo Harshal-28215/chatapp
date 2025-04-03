@@ -41,7 +41,7 @@ export default function LoginForm() {
       email: values.Email,
       password: values.Password
     }
-    const url = import.meta.env.MODE === "development"? import.meta.env.VITE_API_URL:'/';
+    const url = import.meta.env.VITE_API_URL;
 
     try {
       const response = await fetch(`${url}auth/login`,{

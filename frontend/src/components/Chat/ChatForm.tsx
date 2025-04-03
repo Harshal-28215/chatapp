@@ -41,7 +41,7 @@ function ChatForm() {
         formdata.append("text", text);
         
         if (file) formdata.append("image", file);
-        const url = import.meta.env.MODE === "development"? import.meta.env.VITE_API_URL:'/';
+        const url = import.meta.env.VITE_API_URL;
 
         const response = await fetch(`${url}chat/sendmessage/${id}`, {
             method: "POST",
