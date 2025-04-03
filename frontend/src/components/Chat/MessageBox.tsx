@@ -8,9 +8,8 @@ function MessageBox() {
     const { socketexist, setMessages, messages } = useMyContext();
     const messagesEndRef = useRef<HTMLDivElement | null>(null)
 
-    async function fetchMessages() {
     const url = import.meta.env.MODE === "development"? import.meta.env.VITE_API_URL:'/';
-
+    async function fetchMessages() {
         await fetch(`${url}chat/${id}`, {
             method: "GET",
             headers: { "Content-Type": "application/json" },
@@ -35,7 +34,7 @@ function MessageBox() {
 
     useEffect(() => {
         fetchMessages();
-    }, [id])
+    }, [])
 
     useEffect(() => {
         socketmessage();
