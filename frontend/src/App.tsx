@@ -32,7 +32,7 @@ function App() {
   return (
 
     <BrowserRouter>
-      <Navbar />
+      <Navbar userId={userId}/>
       <Routes>
 
         <Route path="/login" element={<Login />} />

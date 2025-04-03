@@ -2,7 +2,7 @@ import { useMyContext } from "@/context/chatappContext";
 import { LogOut, MessageSquareDot, User } from "lucide-react"
 import { Link } from "react-router"
 
-function Navbar() {
+function Navbar({userId}: { userId: string | undefined }) {
 
     const { disconnectSocket } = useMyContext();
 
@@ -31,7 +31,7 @@ function Navbar() {
                 </div>
                 <div className="flex gap-5 items-center">
                     <Link to="/profile" className="flex gap-1 justify-center items-center"><User size={20} /> Profile</Link>
-                    <button className="flex gap-1 justify-center items-center cursor-pointer" onClick={handlelogout}><LogOut size={20} /> LoguOut</button>
+                    {userId && <button className="flex gap-1 justify-center items-center cursor-pointer" onClick={handlelogout}><LogOut size={20} /> LoguOut</button>}
                 </div>
             </nav>
         </header>
