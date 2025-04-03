@@ -1,5 +1,4 @@
 import { BrowserRouter, Routes, Route } from "react-router";
-import { useEffect } from "react";
 import Login from "./pages/Login";
 import SignUp from "./pages/SignUp";
 import Navbar from "./components/Navbar/Navbar";
