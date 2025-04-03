@@ -17,7 +17,7 @@ const __dirname = path.resolve();
 
 app.use(cookieParser());
 app.use(cors({
-  origin: ['http://localhost:5173','https://chatappbackend-hmhz.onrender.com'],
+  origin: ['http://localhost:5173','https://chatappf.onrender.com'],
   credentials: true,
 }));
 
