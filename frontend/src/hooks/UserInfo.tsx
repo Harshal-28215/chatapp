@@ -2,10 +2,12 @@ import { useQuery } from "@tanstack/react-query";
 
 export const useUserInfo = () => {
 
+    const url = import.meta.env.MODE === "development"? import.meta.env.VITE_API_URL:'/';
+
     const { error, data, isLoading } = useQuery({
         queryKey: ['userInfo'],
         queryFn: () =>
-            fetch(`/auth/check`, {
+            fetch(`${url}auth/check`, {
                 method: "GET",
                 headers: { "Content-Type": "application/json" },
                 credentials: "include",

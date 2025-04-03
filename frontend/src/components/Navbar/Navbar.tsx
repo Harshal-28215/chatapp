@@ -2,19 +2,22 @@ import { useMyContext } from "@/context/chatappContext";
 import { LogOut, MessageSquareDot, User } from "lucide-react"
 import { Link } from "react-router"
 
-function Navbar({userId}: { userId: string | undefined }) {
+function Navbar({ userId }: { userId: string | undefined }) {
 
     const { disconnectSocket } = useMyContext();
 
-    function handlelogout(){
+    function handlelogout() {
         console.log('logout');
-        
-        fetch(`${import.meta.env.VITE_API_URL}/auth/logout`, {
+
+        const url = import.meta.env.MODE === "development" ? import.meta.env.VITE_API_URL : '/';
+
+
+        fetch(`${url}auth/logout`, {
             method: "POST",
             credentials: "include"
         }).then((res) => {
             console.log(res);
-            
+
             if (res.ok) {
                 disconnectSocket();
                 window.location.href = "/login";

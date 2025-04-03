@@ -1,10 +1,12 @@
 import { useQuery } from "@tanstack/react-query";
 
 export const useSidebarUsers = () => {
+    const url = import.meta.env.MODE === "development"? import.meta.env.VITE_API_URL:'/';
+
     const { error, data, isLoading } = useQuery({
         queryKey: ['sidebarUsers'],
         queryFn: () =>
-            fetch(`/chat/users`, {
+            fetch(`${url}chat/users`, {
                 method: "GET",
                 headers: { "Content-Type": "application/json" },
                 credentials: "include",

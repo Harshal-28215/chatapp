@@ -8,6 +8,7 @@ import Chat from "./pages/Chat";
 import ProtectedRoutes from "./protectedRoutes";
 import { useUserInfo } from "./hooks/UserInfo";
 import { useMyContext } from "./context/chatappContext";
+import HomeLoading from "./components/Loading/HomeLoading";
 
 
 function App() {
@@ -19,7 +20,7 @@ function App() {
   }
 
   if (isLoading) {
-    return <div>Loading...</div>
+    return <HomeLoading />
   }
 
   const message = data?.message as string;

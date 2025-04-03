@@ -9,7 +9,9 @@ function MessageBox() {
     const messagesEndRef = useRef<HTMLDivElement | null>(null)
 
     async function fetchMessages() {
-        await fetch(`/chat/${id}`, {
+    const url = import.meta.env.MODE === "development"? import.meta.env.VITE_API_URL:'/';
+
+        await fetch(`${url}chat/${id}`, {
             method: "GET",
             headers: { "Content-Type": "application/json" },
             credentials: "include",

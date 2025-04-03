@@ -44,8 +44,9 @@ import { Link } from "react-router"
         password: values.Password
       }
       try {
-        console.log(values)
-        const response = await fetch(`/auth/signup`,{
+        const url = import.meta.env.MODE === "development"? import.meta.env.VITE_API_URL:'/';
+
+        const response = await fetch(`${url}auth/signup`,{
           method: "POST",
           headers: {
             "Content-Type": "application/json"

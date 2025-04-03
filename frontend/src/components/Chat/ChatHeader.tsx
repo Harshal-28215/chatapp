@@ -7,10 +7,12 @@ function ChatHeader() {
     const { onlineUsers } = useMyContext();
     const id = params.id;
 
+    const url = import.meta.env.MODE === "development"? import.meta.env.VITE_API_URL:'/';
+
     const { data, isLoading } = useQuery({
         queryKey: ["chatHeaderUser", id],
         queryFn: async () => {
-            const response = await fetch(`/chat/users/${id}`, {
+            const response = await fetch(`${url}chat/users/${id}`, {
                 method: "GET",
                 headers: { "Content-Type": "application/json" },
                 credentials: "include",
@@ -22,7 +24,7 @@ function ChatHeader() {
         enabled: !!id,
     });
 
-    if (isLoading) return <p>Loading...</p>
+    if (isLoading) return <div className="h-[100vh] flex justify-center items-center"><p>Loading...</p></div>
 
     return (
         <div>

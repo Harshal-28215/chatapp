@@ -143,3 +143,17 @@ body{
   background-color: #010018;
   color: white;
 }
+
+.skeleton {
+  animation: skeleton-loading 1s linear infinite alternate-reverse;
+}
+
+
+@keyframes skeleton-loading {
+  0% {
+    background-color: hsl(0, 0%, 17%);
+  }
+  100% {
+    background-color: hsl(0, 0%, 32%);
+  }
+}
