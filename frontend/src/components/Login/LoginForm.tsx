@@ -53,7 +53,7 @@ export default function LoginForm() {
         credentials: "include"
       })
       if (response.ok) {
-        window.location.href = "/"
+        window.location.href = "https://chatappbackend-hmhz.onrender.com/"
       }
       
     } catch (error) {
