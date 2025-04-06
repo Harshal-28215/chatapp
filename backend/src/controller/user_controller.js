@@ -73,8 +73,8 @@ export async function logout(req, res) {
     try {
         res.clearCookie('token', {
             httpOnly: true,
-            sameSite: 'None',
-            secure: true,
+            sameSite: process.env.NODE_ENV !== "development" ? "none" : "lax",
+            secure: process.env.NODE_ENV !== "development",
           });
         res.status(200).json({ message: 'logout successfully' })
     } catch (error) {
