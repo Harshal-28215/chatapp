@@ -54,7 +54,7 @@ export const MyProvider: React.FC<{ children: ReactNode }> = ({ children }): JSX
   const [messages, setMessages] = useState(defaultContext.messages);
   const [isOpen,setIsOpen] = useState(false);
 
-  const socketurl = import.meta.env.MODE === "development"? 'http://localhost:5000' : "/" ;
+  const socketurl = import.meta.env.MODE === "development"? 'http://localhost:5000' : "https://chatappbackend-hmhz.onrender.com" ;
 
   const connectSocket = useCallback((userId: string) => {
     if (socketexist) return;
