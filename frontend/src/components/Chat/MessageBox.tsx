@@ -50,7 +50,7 @@ function MessageBox({ recieverImage, senderImage }: { recieverImage: string, sen
     isLoading && <div className="h-[100vh] flex justify-center items-center"><p>Loading...</p></div>
 
     return (
-        <div className='p-3 space-y-2 h-[calc(100vh-195px)] overflow-y-auto'>
+        <div className='p-3 space-y-2 h-[calc(100vh-196px)] overflow-y-auto'>
             {
                 messages?.map((message: messageType) => (
                     <div className={`flex items-start gap-3 ${message?.receiverId === id ? 'flex-row-reverse' : 'flex-row'}`} key={message?._id}>

@@ -12,7 +12,7 @@ function ChatHeader({data}: chatHeaerProps) {
     const { onlineUsers } = useMyContext();
 
     return (
-        <div>
+        <div className="h-[74px]">
             <div className="flex gap-3 p-3 bg-[#0d0c3b]">
                 <div className="relative w-[50px] h-[50px]">
                     <img
