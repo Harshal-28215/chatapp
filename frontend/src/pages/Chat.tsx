@@ -31,7 +31,7 @@ function Chat() {
 
     return (
         <main className='bg-[#020132] w-full sm:relative absolute'>
-            {isLoading ? <div className="h-[100vh] flex justify-center items-center"><p>Loading...</p></div> : <ChatHeader data={data?.data}/>}
+            {isLoading ? <div className="h-[76px] flex justify-center items-center"><p>Loading...</p></div> : <ChatHeader data={data?.data}/>}
             <MessageBox recieverImage={data?.data?.profilePic} senderImage={userData?.data?.profilePic}/>
             <ChatForm />
         </main>
