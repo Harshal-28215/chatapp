@@ -4,6 +4,7 @@ import { generateToken } from "../utils/generateToken.js";
 import cloudinary from "../utils/cloudinary.js";
 import formidable from "formidable";
 import fs from "fs";
+import { io } from "../socket.js";
 
 export async function signUp(req, res) {
     const { email, password, name } = req.body;
@@ -17,16 +18,21 @@ export async function signUp(req, res) {
 
         const user = new User({ email, password: hashedPassword, name });
 
+        let userResponse = {};
+
         if (user) {
             generateToken(user._id, res)
-            await user.save();
-        }
 
-        const userResponse = {
-            _id: user._id,
-            name: user.name,
-            email: user.email,
-            profilePic: user.profilePic,
+            userResponse = {
+                _id: user._id,
+                name: user.name,
+                email: user.email,
+                profilePic: user.profilePic,
+            }
+
+            io.emit("newUser",userResponse)
+
+            await user.save();
         }
 
         res.status(201).json({ message: 'signup successful', data: userResponse });
@@ -76,11 +82,11 @@ export async function profile(req, res) {
 
     const from = formidable({ multiples: false });
 
-    from.parse(req, async (err, fields, files) => {        
+    from.parse(req, async (err, fields, files) => {
 
         const userId = req.user._id
         const file = files.profilePic?.[0];
-        
+
 
         try {
             if (!file) return res.status(404).json({ message: "image is require" })

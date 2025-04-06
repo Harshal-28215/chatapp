@@ -2,20 +2,17 @@ import { messageType, useMyContext } from "@/context/chatappContext";
 import { useEffect, useRef, useState } from "react"
 import { useParams } from "react-router";
 
-function MessageBox() {
+function MessageBox({ recieverImage, senderImage }: { recieverImage: string, senderImage: string }) {
+
+    console.log(recieverImage);
+
+
     const params = useParams<{ id: string }>();
     const id = params.id;
-    const { socketexist, messages, setMessages } = useMyContext();
+    const { messages, setMessages } = useMyContext();
 
     const messagesEndRef = useRef<HTMLDivElement | null>(null)
     const [isLoading, setIsLoading] = useState(false)
-
-    function socketmessage() {
-        socketexist?.on("newMessage", (data: messageType) => {
-            if (data?.senderId !== id) return;
-            setMessages(prevMessages => [...prevMessages, data])
-        })
-    }
 
     const scrollToBottom = () => {
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
@@ -49,10 +46,6 @@ function MessageBox() {
         };
     }, [id]);
 
-    useEffect(() => {
-        socketmessage();
-    }, [socketexist, id])
-
 
     isLoading && <div className="h-[100vh] flex justify-center items-center"><p>Loading...</p></div>
 
@@ -61,7 +54,9 @@ function MessageBox() {
             {
                 messages?.map((message: messageType) => (
                     <div className={`flex items-start gap-3 ${message?.receiverId === id ? 'flex-row-reverse' : 'flex-row'}`} key={message?._id}>
-                        <img src="/profile.png" alt="profile" width={30} height={30} className='object-cover rounded-full' />
+                        <div className="relative w-[30px] h-[30px]">
+                            <img src={message?.receiverId === id && senderImage ? senderImage : recieverImage ? recieverImage : "/profile.png"} alt="profile" className='w-full h-full object-cover rounded-full' />
+                        </div>
                         <div className="bg-[#010018] p-2 rounded-md relative flex flex-col gap-2">
                             {
                                 message?.image &&

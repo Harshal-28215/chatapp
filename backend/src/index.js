@@ -26,16 +26,16 @@ app.use(express.json())
 app.use('/auth', user_route)
 app.use('/chat', chat_router)
 
-if (process.env.NODE_ENV === 'production') {
-  app.use(express.static(path.join(__dirname, '../frontend/dist')));
+// if (process.env.NODE_ENV === 'production') {
+//   app.use(express.static(path.join(__dirname, '../frontend/dist')));
 
-  app.get('*', (req, res) => {
-    if (req.originalUrl.startsWith('/chat')) {
-      return;
-    }
-    res.sendFile(path.join(__dirname, '../frontend', 'dist', 'index.html'));
-  })
-}
+//   app.get('*', (req, res) => {
+//     if (req.originalUrl.startsWith('/chat')) {
+//       return;
+//     }
+//     res.sendFile(path.join(__dirname, '../frontend', 'dist', 'index.html'));
+//   })
+// }
 
 server.listen(port, () => {
   console.log("Server ready on port 5000.");

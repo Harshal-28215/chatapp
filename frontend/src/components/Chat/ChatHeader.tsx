@@ -1,37 +1,22 @@
 import { useMyContext } from "@/context/chatappContext";
-import { useQuery } from "@tanstack/react-query";
-import { useParams } from "react-router";
 
-function ChatHeader() {
-    const params = useParams<{ id: string }>();
+type chatHeaerProps = {
+    data: {
+        _id: string;
+        name: string;
+        profilePic: string;
+    };
+}
+
+function ChatHeader({data}: chatHeaerProps) {
     const { onlineUsers } = useMyContext();
-    const id = params.id;
-
-    const url = import.meta.env.VITE_API_URL;;
-
-    const { data, isLoading } = useQuery({
-        queryKey: ["chatHeaderUser", id],
-        queryFn: async () => {
-            const response = await fetch(`${url}chat/users/${id}`, {
-                method: "GET",
-                headers: { "Content-Type": "application/json" },
-                credentials: "include",
-            });
-            if (!response.ok) throw new Error("Failed to fetch user");
-            return response.json();
-        },
-        staleTime: 60 * 60 * 1000,
-        enabled: !!id,
-    });
-
-    if (isLoading) return <div className="h-[100vh] flex justify-center items-center"><p>Loading...</p></div>
 
     return (
         <div>
             <div className="flex gap-3 p-3 bg-[#0d0c3b]">
                 <div className="relative w-[50px] h-[50px]">
                     <img
-                        src={data?.data?.profilePic || "/profile.jpg"}
+                        src={data?.profilePic || "/profile.jpg"}
                         alt="profile logo"
                         width={50}
                         height={50}
@@ -39,8 +24,8 @@ function ChatHeader() {
                     />
                 </div>
                 <div>
-                    <h3>{data?.data?.name || "Loading..."}</h3>
-                    <p>{onlineUsers?.includes(data.data._id) ? "online" : "offline"}</p>
+                    <h3>{data?.name || "Loading..."}</h3>
+                    <p>{onlineUsers?.includes(data._id) ? "online" : "offline"}</p>
                 </div>
             </div>
         </div>

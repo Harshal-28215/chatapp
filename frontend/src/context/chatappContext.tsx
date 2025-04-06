@@ -1,4 +1,4 @@
-import React, { createContext, useContext, ReactNode, JSX, useState } from 'react';
+import React, { createContext, useContext, ReactNode, JSX, useState, useMemo, useCallback } from 'react';
 import io, { Socket } from 'socket.io-client';
 
 export type messageType = {
@@ -52,26 +52,31 @@ export const MyProvider: React.FC<{ children: ReactNode }> = ({ children }): JSX
   const [socketexist, setSocketexist] = useState(defaultContext.socketexist);
   const [onlineUsers, setOnlineUsers] = useState(defaultContext.onlineUsers);
   const [messages, setMessages] = useState(defaultContext.messages);
-  const [isOpen,setIsOpen] = useState(false) 
+  const [isOpen,setIsOpen] = useState(false);
 
   const socketurl = import.meta.env.MODE === "development"? 'http://localhost:5000' : "/" ;
 
-  const connectSocket = (userId: string) => {
-    
-    if (socketexist) return
-    if (!userId) return
-    const socket = io(socketurl,{
+  const connectSocket = useCallback((userId: string) => {
+    if (socketexist) return;
+    if (!userId) return;
+    const socket = io(socketurl, {
       query: {
-        userId
-      }
-    })
+        userId,
+      },
+    });
     socket.connect();
     if (socket) setSocketexist(socket);
 
     socket.on('onlineUsers', (users: string[]) => {
       setOnlineUsers(users);
     });
-  }
+
+    socket.on('newMessage',(data)=>{
+      setMessages((prevMessages) => [...prevMessages, data]);
+    })
+  }, [socketexist, socketurl]);
+
+  // const socket = useMemo(()=>io(socketurl,{query:{userId}}),[])
 
   const disconnectSocket = () => {
     if (socketexist) socketexist.disconnect();

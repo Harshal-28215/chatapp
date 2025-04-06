@@ -3,14 +3,13 @@ import { useSidebarUsers } from '@/hooks/SidebarUsers';
 import { SidebarUsers } from '@/utils/Types';
 import { useMyContext } from '@/context/chatappContext';
 import { UsersIcon } from 'lucide-react';
-import { useEffect, useRef } from 'react';
-
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 function UserSideBar() {
 
-
   const { data, isLoading } = useSidebarUsers();
-  const {onlineUsers,isOpen,setIsOpen} = useMyContext(); 
+  const {onlineUsers,isOpen,setIsOpen,socketexist} = useMyContext();
+  const [newUser, setNewUser] = useState<SidebarUsers[]>([])
 
   const sidebarRef = useRef<HTMLDivElement>(null)
 
@@ -36,6 +35,22 @@ function UserSideBar() {
     setIsOpen(true)
   }
 
+  const newUserHandler = useCallback((data:SidebarUsers) => {
+    setNewUser((prev:SidebarUsers[]) => [...prev, data]);
+    console.log("newUser", data);
+  },[])
+
+  useEffect(()=>{
+    if (!socketexist) return;
+    
+    socketexist?.on("newUser", newUserHandler)
+
+    return () => {
+      socketexist?.off("newUser", newUserHandler)
+    }
+
+  },[socketexist, newUserHandler])
+
   return (
     <aside ref={sidebarRef} className='w-[300px] p-2 relative h-full bg-[#010025] z-10'style={{
       transform: isOpen ? 'translateX(0)' : 'translateX(-100%)',
@@ -49,9 +64,14 @@ function UserSideBar() {
         <p>Loading...</p>
         :
         <div className='space-y-5 sm:h-[calc(100vh-120px)] h-[calc(100vh-170px)] overflow-y-scroll'>
+          <>
           {data.data.map((data:SidebarUsers) => (
             <Users data={data} onlineUsers={onlineUsers} setIsOpen={setIsOpen} key={data._id}/>
           ))}
+          {newUser.map((data:SidebarUsers) => (
+            <Users data={data} onlineUsers={onlineUsers} setIsOpen={setIsOpen} key={data._id}/>
+          ))}
+          </>
         </div>
 
       }
