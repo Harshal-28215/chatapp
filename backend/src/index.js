@@ -17,7 +17,7 @@ const __dirname = path.resolve();
 
 app.use(cookieParser());
 app.use(cors({
-  origin: ['http://localhost:5173','https://chatapp-liart-iota.vercel.app',"https://chatappf.onrender.com/login"],
+  origin: ['http://localhost:5173','https://chatapp-liart-iota.vercel.app',"https://chatappf.onrender.com"],
   credentials: true,
 }));
 
