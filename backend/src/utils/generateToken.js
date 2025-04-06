@@ -7,8 +7,8 @@ export const generateToken = (id,res) => {
 
     res.cookie('token', token, {
         httpOnly: true,
-        // sameSite: "none",
-        secure: process.env.NODE_ENV !== 'development',
+        sameSite: "none",
+        secure: true,
         maxAge: 30 * 24 * 60 * 60 * 1000
     })
 
