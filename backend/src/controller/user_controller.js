@@ -71,7 +71,11 @@ export async function login(req, res) {
 
 export async function logout(req, res) {
     try {
-        res.cookie('token', "", { maxAge: 0 })
+        res.clearCookie('token', {
+            httpOnly: true,
+            sameSite: 'None',
+            secure: true,
+          });
         res.status(200).json({ message: 'logout successfully' })
     } catch (error) {
         res.status(500).json({ message: error.massage })
