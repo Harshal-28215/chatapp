@@ -16,7 +16,11 @@ const chatSchema = new mongoose.Schema({
     },
     image:{
         type:String
+    },
+    coverImage:{
+        type:String
     }
+
 },{timestamps:true})
 
 const Chat = mongoose.model("Chat", chatSchema);

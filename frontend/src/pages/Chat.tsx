@@ -4,11 +4,13 @@ import MessageBox from '@/components/Chat/MessageBox'
 import { useUserInfo } from '@/hooks/UserInfo';
 import AppLayout from '@/Layout/AppLayout'
 import { useQuery } from "@tanstack/react-query";
+import { useState } from 'react';
 import { useParams } from 'react-router';
 
 function Chat() {
     const params = useParams<{ id: string }>();
     const id = params.id;
+        const [isMessageLoading, setIsMessageLoading] = useState(false)
 
     const url = import.meta.env.VITE_API_URL;;
     const { data, isLoading } = useQuery({
@@ -32,8 +34,8 @@ function Chat() {
     return (
         <main className='bg-[#020132] w-full sm:relative absolute'>
             {isLoading ? <div className="h-[76px] flex justify-center items-center"><p>Loading...</p></div> : <ChatHeader data={data?.data}/>}
-            <MessageBox recieverImage={data?.data?.profilePic} senderImage={userData?.data?.profilePic}/>
-            <ChatForm />
+            <MessageBox recieverImage={data?.data?.profilePic} senderImage={userData?.data?.profilePic} isMessageLoading={isMessageLoading}/>
+            <ChatForm setImageLoading={setIsMessageLoading}/>
         </main>
     )
 }

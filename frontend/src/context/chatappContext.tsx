@@ -8,6 +8,7 @@ export type messageType = {
   text: string,
   updatedAt: string,
   image: string,
+  coverImage: string,
   _id: string,
 }
 
@@ -75,8 +76,6 @@ export const MyProvider: React.FC<{ children: ReactNode }> = ({ children }): JSX
       setMessages((prevMessages) => [...prevMessages, data]);
     })
   }, [socketexist, socketurl]);
-
-  // const socket = useMemo(()=>io(socketurl,{query:{userId}}),[])
 
   const disconnectSocket = () => {
     if (socketexist) socketexist.disconnect();

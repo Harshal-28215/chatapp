@@ -1,15 +1,14 @@
 import { messageType, useMyContext } from "@/context/chatappContext";
 import { useEffect, useRef, useState } from "react"
 import { useParams } from "react-router";
-
-function MessageBox({ recieverImage, senderImage }: { recieverImage: string, senderImage: string }) {
-
-    console.log(recieverImage);
+import { Link } from 'react-router';
 
 
+function MessageBox({ recieverImage, senderImage, isMessageLoading }: { recieverImage: string, senderImage: string, isMessageLoading: boolean }) {
     const params = useParams<{ id: string }>();
     const id = params.id;
     const { messages, setMessages } = useMyContext();
+
 
     const messagesEndRef = useRef<HTMLDivElement | null>(null)
     const [isLoading, setIsLoading] = useState(false)
@@ -63,14 +62,19 @@ function MessageBox({ recieverImage, senderImage }: { recieverImage: string, sen
                         <div className="bg-[#010018] p-2 rounded-md relative flex flex-col gap-2">
                             {
                                 message?.image &&
-                                <div className='rounded-md'>
-                                    <img src={message?.image} alt="profile" className='object-cover rounded-md max-w-[100px] max-h-[200px]' />
-                                </div>
+                                <Link to={message?.image} target="_blank" rel="noopener noreferrer" className='rounded-md'>
+                                    <img src={message?.coverImage} alt="profile" className='object-cover rounded-md max-w-[100px] max-h-[200px]' />
+                                </Link>
                             }
                             <p>{message?.text}</p>
                         </div>
                     </div>
                 ))
+            }
+            {isMessageLoading &&
+                <div className="flex items-start gap-3 flex-row-reverse">
+                    <p>sending...</p>
+                </div>
             }
             <div ref={messagesEndRef} />
         </div>

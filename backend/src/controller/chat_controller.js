@@ -1,8 +1,10 @@
 import formidable from "formidable"
 import Chat from "../model/chat_model.js"
 import User from "../model/user_model.js"
-import cloudinary from "../utils/cloudinary.js"
 import { getReceiverSocketId, io } from "../socket.js"
+import fs from "fs"
+import sharp from "sharp"
+import { imageUpload } from "../utils/imageupload.js"
 
 export async function getUsers(req, res) {
     const logedinUserId = req.user._id
@@ -54,7 +56,8 @@ export async function sendMessage(req, res) {
         const text = Array.isArray(fields.text) ? fields.text[0] : fields.text || "";
         const { id: receiverId } = req.params
         const senderId = req.user._id
-        const file = files.image?.[0]        
+        const file = files.image?.[0]   
+        
         
         try {
 
@@ -63,19 +66,29 @@ export async function sendMessage(req, res) {
             }
 
             let imageUrl;
+            let fullimageUrl;
             if (file) {
-                const uploadimage = await cloudinary.uploader.upload(file?.filepath, {
-                    folder: "chat"
-                });
+                const originalBuffer = await fs.promises.readFile(file.filepath);
+
+                const previewbuffer = await sharp(originalBuffer).resize({width:300}).jpeg({quality:30}).toBuffer()
+                const fullsizeBuffer = await sharp(originalBuffer).jpeg({quality:70}).toBuffer()
+                
+                const timestamp = Date.now();
+                const uploadimage = await imageUpload(previewbuffer, `compressed-${timestamp}`)
+                const fullimage = await imageUpload(fullsizeBuffer, `fullsize-${timestamp}`)
 
                 if(uploadimage) imageUrl = uploadimage.secure_url;
+                if(fullimage) fullimageUrl = fullimage.secure_url;
+
+                
             }
 
             const newChat = new Chat({
                 senderId,
                 receiverId,
                 text,
-                image: imageUrl,
+                image: fullimageUrl,
+                coverImage:imageUrl
             })
 
             await newChat.save();

@@ -3,7 +3,7 @@ import { ImageUp, Send, X } from 'lucide-react';
 import React, { useState } from 'react'
 import { useParams } from 'react-router';
 
-function ChatForm() {
+function ChatForm({setImageLoading}: {setImageLoading: React.Dispatch<React.SetStateAction<boolean>>}) {
     const [selectedFile, setSelectedFile] = useState<string>("")
     const [text, setText] = useState<string>("")
     const [file, setFile] = useState<File | null>(null)
@@ -43,18 +43,23 @@ function ChatForm() {
         if (file) formdata.append("image", file);
         const url = import.meta.env.VITE_API_URL;
 
-        const response = await fetch(`${url}chat/sendmessage/${id}`, {
-            method: "POST",
-            credentials: "include",
-            body: formdata
-        })
-        const data = await response.json();
-        if (response.ok) {
-            setText("")
-            setSelectedFile("")
-            setMessages(prevmessage => [...prevmessage, data.data])
-        }else{
+        try {
+            setImageLoading(true)
+            const response = await fetch(`${url}chat/sendmessage/${id}`, {
+                method: "POST",
+                credentials: "include",
+                body: formdata
+            })
+            const data = await response.json();
+            if (response.ok) {
+                setText("")
+                setSelectedFile("")
+                setMessages(prevmessage => [...prevmessage, data.data])
+            }
+        } catch (error) {
             console.log('error')
+        }finally{
+            setImageLoading(false)
         }
     }
 
