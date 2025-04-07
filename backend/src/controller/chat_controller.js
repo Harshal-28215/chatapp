@@ -56,9 +56,9 @@ export async function sendMessage(req, res) {
         const text = Array.isArray(fields.text) ? fields.text[0] : fields.text || "";
         const { id: receiverId } = req.params
         const senderId = req.user._id
-        const file = files.image?.[0]   
-        
-        
+        const file = files.image?.[0]
+
+
         try {
 
             if (!text && !file) {
@@ -70,17 +70,11 @@ export async function sendMessage(req, res) {
             if (file) {
                 const originalBuffer = await fs.promises.readFile(file.filepath);
 
-                const previewbuffer = await sharp(originalBuffer).resize({width:300}).jpeg({quality:30}).toBuffer()
-                const fullsizeBuffer = await sharp(originalBuffer).jpeg({quality:70}).toBuffer()
-                
-                const timestamp = Date.now();
-                const uploadimage = await imageUpload(previewbuffer, `compressed-${timestamp}`)
-                const fullimage = await imageUpload(fullsizeBuffer, `fullsize-${timestamp}`)
+                const fullsizeBuffer = await sharp(originalBuffer).jpeg({ quality: 70 }).toBuffer()
 
-                if(uploadimage) imageUrl = uploadimage.secure_url;
-                if(fullimage) fullimageUrl = fullimage.secure_url;
-
-                
+                const result = await imageUpload(fullsizeBuffer, file.originalFilename);
+                 if(result) fullimageUrl = result.secure_url;
+                if (fullimageUrl) imageUrl = fullimageUrl.replace('/upload/', '/upload/w_300,q_30/');
             }
 
             const newChat = new Chat({
@@ -88,13 +82,13 @@ export async function sendMessage(req, res) {
                 receiverId,
                 text,
                 image: fullimageUrl,
-                coverImage:imageUrl
+                coverImage: imageUrl
             })
 
             await newChat.save();
 
             const receiverSocketId = getReceiverSocketId(receiverId)
-            if(receiverSocketId) io.to(receiverSocketId).emit("newMessage",newChat)
+            if (receiverSocketId) io.to(receiverSocketId).emit("newMessage", newChat)
 
             res.status(200).json({ data: newChat })
         } catch (error) {
