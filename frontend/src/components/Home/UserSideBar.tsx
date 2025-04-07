@@ -15,25 +15,39 @@ function UserSideBar() {
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
-      if (sidebarRef.current && !sidebarRef.current.contains(event.target as Node)) {
-        setIsOpen(false)
+      if (
+        sidebarRef.current &&
+        !sidebarRef.current.contains(event.target as Node) &&
+        window.innerWidth <= 640 // Only close on small screens
+      ) {
+        setIsOpen(false);
       }
     }
-
-    if (isOpen) {
-      document.addEventListener("mousedown", handleClickOutside)
-    } else {
-      document.removeEventListener("mousedown", handleClickOutside)
-    }
-
+  
+    document.addEventListener("mousedown", handleClickOutside);
+  
     return () => {
-      document.removeEventListener("mousedown", handleClickOutside)
-    }
-  }, [isOpen])
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);  
 
-    if (window.innerWidth > 640) {
-      setIsOpen(true)
+  useEffect(() => {
+    function handleResize() {
+      if (window.innerWidth > 640) {
+        setIsOpen(true);
+      } else {
+        setIsOpen(false);
+      }
     }
+  
+    handleResize(); // run once on mount
+    window.addEventListener("resize", handleResize);
+  
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+  
 
   const newUserHandler = useCallback((data: SidebarUsers) => {
     setNewUser((prev: SidebarUsers[]) => [...prev, data]);

@@ -9,30 +9,35 @@ import ProtectedRoutes from "./protectedRoutes";
 import { useUserInfo } from "./hooks/UserInfo";
 import { useMyContext } from "./context/chatappContext";
 import HomeLoading from "./components/Loading/HomeLoading";
+import { useEffect } from "react";
 
 function App() {
   const { data, error, isLoading } = useUserInfo();
-  const { connectSocket } = useMyContext();
+  const { connectSocket,disconnectSocket } = useMyContext();
 
   if (error) {
     console.error(error);
   }
+  
+  useEffect(() => {
+    if (data?.data?._id) {
+      connectSocket(data?.data?._id);
+    }
+
+    return () => {
+      disconnectSocket()
+    }
+  }, [data?.data?._id])
 
   if (isLoading) {
     return <HomeLoading />;
   }
 
-  const message = data?.message ?? "";
-  const userId = data?.data?._id;
-
-    if (userId) {
-      connectSocket(userId);
-    }
 
   return (
 
     <BrowserRouter>
-      <Navbar userId={userId}/>
+      <Navbar userId={data?.data?._id} />
       <Routes>
 
         <Route path="/login" element={<Login />} />
@@ -40,17 +45,17 @@ function App() {
 
 
         <Route path="/" element={
-          <ProtectedRoutes message={message} navigate="/login">
+          <ProtectedRoutes message={data?.message} navigate="/login">
             <Home />
           </ProtectedRoutes>
         } />
         <Route path="/chat/:id" element={
-          <ProtectedRoutes message={message} navigate="/login">
+          <ProtectedRoutes message={data?.message} navigate="/login">
             <Chat />
           </ProtectedRoutes>
         } />
         <Route path="/profile" element={
-          <ProtectedRoutes message={message} navigate="/login">
+          <ProtectedRoutes message={data?.message} navigate="/login">
             <Profile />
           </ProtectedRoutes>
         } />

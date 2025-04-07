@@ -78,7 +78,11 @@ export const MyProvider: React.FC<{ children: ReactNode }> = ({ children }): JSX
   }, [socketexist, socketurl]);
 
   const disconnectSocket = () => {
-    if (socketexist) socketexist.disconnect();
+    if (socketexist) {
+      socketexist.disconnect();
+      setSocketexist(null)
+      setOnlineUsers([]);
+    }
   }
 
   const value = {
