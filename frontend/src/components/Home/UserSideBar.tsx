@@ -3,7 +3,7 @@ import { useSidebarUsers } from '@/hooks/SidebarUsers';
 import { SidebarUsers } from '@/utils/Types';
 import { useMyContext } from '@/context/chatappContext';
 import { UsersIcon } from 'lucide-react';
-import { use, useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 function UserSideBar() {
 
