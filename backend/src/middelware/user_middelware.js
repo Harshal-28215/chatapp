@@ -20,3 +20,7 @@ export const authUser = async (req, res, next) => {
         res.status(500).json({ message: error.message })
     }
 }
+
+// export const authorizeUser = async (req, res, next) => {
+
+// }

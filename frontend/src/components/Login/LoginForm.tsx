@@ -23,13 +23,15 @@ import {
   PasswordInput
 } from "@/components/ui/password-input"
 import { Link } from "react-router"
+import { useState } from "react"
 
 const formSchema = z.object({
-  Email: z.string(),
-  Password: z.string()
+  Email: z.string().email("Invalid email address"),
+  Password: z.string().min(5, "Password must be atleast 5 letters")
 });
 
 export default function LoginForm() {
+  const [error, setError] = useState<string | null>(null)
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -52,8 +54,11 @@ export default function LoginForm() {
         body: JSON.stringify(bodyData),
         credentials: "include"
       })
+      const data = await response.json()
       if (response.ok) {
         window.location.href = "/"
+      }else{
+        setError(data.message)
       }
       
     } catch (error) {
@@ -102,6 +107,8 @@ export default function LoginForm() {
           <Button type="submit">Submit</Button>
           <Link to="/signup" className="underline">Create Account</Link>
         </div>
+
+        {error && <p className="text-red-500 text-sm">{error}</p>}
       </form>
     </Form>
   )
