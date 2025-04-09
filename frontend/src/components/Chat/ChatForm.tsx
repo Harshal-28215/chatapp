@@ -3,12 +3,21 @@ import { ImageUp, Send, X } from 'lucide-react';
 import React, { useState } from 'react'
 import { useParams } from 'react-router';
 
-function ChatForm({setImageLoading}: {setImageLoading: React.Dispatch<React.SetStateAction<boolean>>}) {
-    const [selectedFile, setSelectedFile] = useState<string>("")
-    const [text, setText] = useState<string>("")
-    const [file, setFile] = useState<File | null>(null)
-    const {setMessages} = useMyContext();
+type messagepropstype = {
+    setImageLoading: React.Dispatch<React.SetStateAction<boolean>>
+    isUpdating: string
+    setIsUpdating: (value: string) => void
+    text:string
+    setText: React.Dispatch<React.SetStateAction<string>>
+}
 
+
+function ChatForm({ setImageLoading, isUpdating, setIsUpdating, text, setText }: messagepropstype) {
+
+    const [selectedFile, setSelectedFile] = useState<string>("")
+    const [file, setFile] = useState<File | null>(null)
+    const { setMessages } = useMyContext();    
+    
     const params = useParams();
     const id = params.id;
 
@@ -37,29 +46,51 @@ function ChatForm({setImageLoading}: {setImageLoading: React.Dispatch<React.SetS
     const handleformSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
 
-        const formdata = new FormData();    
+        const formdata = new FormData();
         formdata.append("text", text);
-        
+
         if (file) formdata.append("image", file);
         const url = import.meta.env.VITE_API_URL;
 
-        try {
-            setImageLoading(true)
-            const response = await fetch(`${url}chat/sendmessage/${id}`, {
-                method: "POST",
-                credentials: "include",
-                body: formdata
-            })
-            const data = await response.json();
-            if (response.ok) {
+        if (isUpdating) {
+            try {
+                const response = await fetch(`${url}chat/updatemessage/${isUpdating}/${id}`, {
+                    method: "PUT",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ text }),
+                    credentials: "include",
+                })
+                // const data = await response.json();
+                if (response.ok) {
+                    setText("")
+                    setSelectedFile("")
+                }
+            } catch (error) {
+                console.log(error)
+            } finally {
+                setIsUpdating("")
                 setText("")
-                setSelectedFile("")
-                setMessages(prevmessage => [...prevmessage, data.data])
             }
-        } catch (error) {
-            console.log('error')
-        }finally{
-            setImageLoading(false)
+        } else {
+
+            try {
+                setImageLoading(true)
+                const response = await fetch(`${url}chat/sendmessage/${id}`, {
+                    method: "POST",
+                    credentials: "include",
+                    body: formdata
+                })
+                const data = await response.json();
+                if (response.ok) {
+                    setText("")
+                    setSelectedFile("")
+                    setMessages(prevmessage => [...prevmessage, data.data])
+                }
+            } catch (error) {
+                console.log('error')
+            } finally {
+                setImageLoading(false)
+            }
         }
     }
 
@@ -73,10 +104,14 @@ function ChatForm({setImageLoading}: {setImageLoading: React.Dispatch<React.SetS
                 </div>
             }
             <input type="text" id='message' placeholder='Enter Text' className='w-full p-2 border border-white/20 focus:border-white/50 outline-none rounded-md' value={text} onChange={handlechange} />
-
-            <label htmlFor="image" className='cursor-pointer'><ImageUp /></label>
-            <input type="file" id='image' className='hidden' onChange={submitPicture} />
-
+            {!isUpdating ?
+                <>
+                    <label htmlFor="image" className='cursor-pointer'><ImageUp /></label>
+                    <input type="file" id='image' className='hidden' onChange={submitPicture} />
+                </>
+                :
+                <X onClick={() => { setIsUpdating("") }} className='cursor-pointer' />
+            }
             <button type='submit' className='cursor-pointer'><Send /></button>
         </form>
     )

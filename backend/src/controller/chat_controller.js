@@ -73,7 +73,7 @@ export async function sendMessage(req, res) {
                 const fullsizeBuffer = await sharp(originalBuffer).jpeg({ quality: 70 }).toBuffer()
 
                 const result = await imageUpload(fullsizeBuffer, file.originalFilename);
-                 if(result) fullimageUrl = result.secure_url;
+                if (result) fullimageUrl = result.secure_url;
                 if (fullimageUrl) imageUrl = fullimageUrl.replace('/upload/', '/upload/w_300,q_30/');
             }
 
@@ -88,13 +88,55 @@ export async function sendMessage(req, res) {
             await newChat.save();
 
             const receiverSocketId = getReceiverSocketId(receiverId)
+            const senderSocketId = getReceiverSocketId(senderId)
+
             if (receiverSocketId) io.to(receiverSocketId).emit("newMessage", newChat)
+            if (senderSocketId) io.to(senderSocketId).emit("newMessage", newChat)
 
             res.status(200).json({ data: newChat })
         } catch (error) {
             res.status(500).json({ message: error.message })
         }
     })
+}
 
+export async function updateMessage(req, res) {
+    const { id: messageId } = req.params
+    const { rid: receiverId } = req.params
+    const senderId = req.user._id
 
+    const { text } = req.body
+    try {
+        const messages = await Chat.findByIdAndUpdate(messageId, { text: text }, { new: true })
+        if (!messages) return res.status(404).json({ message: "message not found" })
+
+        const receiverSocketId = getReceiverSocketId(receiverId)
+        const senderSocketId = getReceiverSocketId(senderId)
+        if (receiverSocketId) io.to(receiverSocketId).emit("updatedMessage", messages)
+        if (senderSocketId) io.to(senderSocketId).emit("updatedMessage", messages)
+
+        res.status(200).json({ message: "chat updated", data: messages })
+    } catch (error) {
+        res.status(500).json({ message: error.message })
+    }
+}
+
+export async function deleteMessage(req, res) {
+    const { id: messageId } = req.params
+    const { rid: receiverId } = req.params
+    const senderId = req.user._id
+    try {
+        const messages = await Chat.findByIdAndDelete(messageId)
+        if (!messages) return res.status(404).json({ message: "message not found" })
+
+        const receiverSocketId = getReceiverSocketId(receiverId)
+        const senderSocketId = getReceiverSocketId(senderId)
+
+        if (receiverSocketId) io.to(receiverSocketId).emit("deletedMessage", messages)
+        if (senderSocketId) io.to(senderSocketId).emit("deletedMessage", messages)
+
+        res.status(200).json({ message: "chat deleted", data: messages })
+    } catch (error) {
+        res.status(500).json({ message: error.message })
+    }
 }

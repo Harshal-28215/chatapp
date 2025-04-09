@@ -1,4 +1,4 @@
-import React, { createContext, useContext, ReactNode, JSX, useState,useCallback } from 'react';
+import React, { createContext, useContext, ReactNode, JSX, useState, useCallback, useRef } from 'react';
 import io, { Socket } from 'socket.io-client';
 
 export type messageType = {
@@ -27,6 +27,11 @@ interface ContextProps {
 
   isOpen: boolean;
   setIsOpen: (isOpen: boolean) => void;
+
+  messageIds: string[];
+  setMessageIds: (ids: string[]) => void;
+
+  messageRef: React.MutableRefObject<Map<string, messageType | null>>;
 }
 
 const defaultContext: ContextProps = {
@@ -44,6 +49,11 @@ const defaultContext: ContextProps = {
 
   isOpen: false,
   setIsOpen: () => { },
+
+  messageIds: [],
+  setMessageIds: () => { },
+
+  messageRef: { current: new Map<string, messageType>() },
 }
 
 const MyContext = createContext<ContextProps>(defaultContext);
@@ -53,9 +63,11 @@ export const MyProvider: React.FC<{ children: ReactNode }> = ({ children }): JSX
   const [socketexist, setSocketexist] = useState(defaultContext.socketexist);
   const [onlineUsers, setOnlineUsers] = useState(defaultContext.onlineUsers);
   const [messages, setMessages] = useState(defaultContext.messages);
-  const [isOpen,setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+  const [messageIds, setMessageIds] = useState<string[]>([]);
+  const messageRef = useRef<Map<string, messageType | null>>(new Map())
 
-  const socketurl = import.meta.env.MODE === "development"? 'http://localhost:5000' : "https://chatappbackend-hmhz.onrender.com" ;
+  const socketurl = import.meta.env.MODE === "development" ? 'http://localhost:5000' : "https://chatappbackend-hmhz.onrender.com";
 
   const connectSocket = useCallback((userId: string) => {
     if (socketexist) return;
@@ -72,9 +84,25 @@ export const MyProvider: React.FC<{ children: ReactNode }> = ({ children }): JSX
       setOnlineUsers(users);
     });
 
-    socket.on('newMessage',(data)=>{
-      setMessages((prevMessages) => [...prevMessages, data]);
+    socket.on('newMessage', (data) => {
+      messageRef.current.set(data._id, data);
+      setMessageIds(prev => [...prev, data._id])
     })
+
+    socket.on('updatedMessage', (data) => {
+      if (messageRef.current.has(data._id)) {
+        messageRef.current.set(data._id, data);
+        setMessageIds(prev => [...prev])
+      }
+    })
+
+    socket.on('deletedMessage', (data) => {
+      if (messageRef.current.has(data._id)) {
+        messageRef.current.set(data._id, null);
+        setMessageIds(prev => [...prev]);
+      }
+    })
+
   }, [socketexist, socketurl]);
 
   const disconnectSocket = () => {
@@ -95,7 +123,10 @@ export const MyProvider: React.FC<{ children: ReactNode }> = ({ children }): JSX
     messages,
     setMessages,
     isOpen,
-    setIsOpen
+    setIsOpen,
+    messageIds,
+    setMessageIds,
+    messageRef,
   };
 
   return (

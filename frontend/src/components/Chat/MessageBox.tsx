@@ -1,49 +1,31 @@
-import { messageType, useMyContext } from "@/context/chatappContext";
-import { useEffect, useRef, useState } from "react"
+import { messageType } from "@/context/chatappContext";
+import { useEffect, useRef } from "react"
 import { useParams } from "react-router";
-import { Link } from 'react-router';
+import MessageCard from "./MessageCard";
+import { useMessages } from "@/hooks/Messages";
 
+type MessageBoxProps = {
+    recieverImage: string
+    senderImage: string
+    isMessageLoading: boolean
+    setIsUpdating: (value: string) => void
+    setText: React.Dispatch<React.SetStateAction<string>>
+}
 
-function MessageBox({ recieverImage, senderImage, isMessageLoading }: { recieverImage: string, senderImage: string, isMessageLoading: boolean }) {
+function MessageBox({ recieverImage, senderImage, isMessageLoading, setIsUpdating, setText }: MessageBoxProps) {
     const params = useParams<{ id: string }>();
     const id = params.id;
-    const { messages, setMessages } = useMyContext();
 
+    const { messageIds, messageRef, isLoading } = useMessages(id)
 
     const messagesEndRef = useRef<HTMLDivElement | null>(null)
-    const [isLoading, setIsLoading] = useState(false)
-
     const scrollToBottom = () => {
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
     }
 
     useEffect(() => {
         scrollToBottom()
-    }, [messages]);
-
-    useEffect(() => {
-        const url = import.meta.env.VITE_API_URL;
-        async function fetchMessages() {
-            setIsLoading(true)
-            try {
-                await fetch(`${url}chat/${id}`, {
-                    method: "GET",
-                    headers: { "Content-Type": "application/json" },
-                    credentials: "include",
-                }).then((res) => res.json()).then(data => setMessages(data.data))
-            } catch (error) {
-                console.log(error);
-            } finally {
-                setIsLoading(false)
-            }
-        }
-        setTimeout(() => {
-            fetchMessages();
-        }, 0);
-        return () => {
-            setMessages([]);
-        };
-    }, [id]);
+    }, [messageIds]);
 
 
     isLoading && <div className="h-[100vh] relative flex justify-center items-center"><p>Loading...</p></div>
@@ -54,22 +36,13 @@ function MessageBox({ recieverImage, senderImage, isMessageLoading }: { reciever
                 ?
                 <div className="h-[full] flex justify-center items-center"><p>Loading...</p></div>
                 :
-                messages?.map((message: messageType) => (
-                    <div className={`flex items-start gap-3 ${message?.receiverId === id ? 'flex-row-reverse' : 'flex-row'}`} key={message?._id}>
-                        <div className="relative w-[30px] h-[30px]">
-                            <img src={message?.receiverId === id && senderImage ? senderImage : recieverImage ? recieverImage : "/profile.png"} alt="profile" className='w-full h-full object-cover rounded-full' />
-                        </div>
-                        <div className="bg-[#010018] p-2 rounded-md relative flex flex-col gap-2">
-                            {
-                                message?.image &&
-                                <Link to={message?.image} target="_blank" rel="noopener noreferrer" className='rounded-md'>
-                                    <img src={message?.coverImage} alt="profile" className='object-cover rounded-md max-w-[100px] max-h-[200px]' />
-                                </Link>
-                            }
-                            <p>{message?.text}</p>
-                        </div>
-                    </div>
-                ))
+                <>
+                    {messageIds?.map((ids) => {
+                        const message = messageRef.current.get(ids)
+                        if (!message) return null
+                        return <MessageCard key={ids} message={message} recieverImage={recieverImage} senderImage={senderImage} id={id} setIsUpdating={setIsUpdating} setText={setText} />
+                    })}
+                </>
             }
             {isMessageLoading &&
                 <div className="flex items-start gap-3 flex-row-reverse">
