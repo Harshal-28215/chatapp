@@ -6,7 +6,7 @@ type messagepropstype = {
     setImageLoading: React.Dispatch<React.SetStateAction<boolean>>
     isUpdating: string
     setIsUpdating: (value: string) => void
-    text:string
+    text: string
     setText: React.Dispatch<React.SetStateAction<string>>
 }
 
@@ -16,7 +16,7 @@ function ChatForm({ setImageLoading, isUpdating, setIsUpdating, text, setText }:
     const [selectedFile, setSelectedFile] = useState<string>("")
     const [file, setFile] = useState<File | null>(null)
     const [isSending, setIsSending] = useState(false)
-    
+
     const params = useParams();
     const id = params.id;
 
@@ -46,7 +46,7 @@ function ChatForm({ setImageLoading, isUpdating, setIsUpdating, text, setText }:
         e.preventDefault()
 
         if (!text.trim() && !file) return;
-        if(isSending) return;
+        if (isSending) return;
 
         const formdata = new FormData();
         formdata.append("text", text);
@@ -102,6 +102,14 @@ function ChatForm({ setImageLoading, isUpdating, setIsUpdating, text, setText }:
         }
     }
 
+    const handleclearstate = () => {
+        setSelectedFile("")
+        setText("")
+        setFile(null)
+        setIsUpdating("")
+        setImageLoading(false)
+    }
+
     return (
         <form className='flex gap-3 p-3 justify-center items-center absolute sm:bottom-0 w-full' onSubmit={handleformSubmit}>
             {
@@ -118,9 +126,9 @@ function ChatForm({ setImageLoading, isUpdating, setIsUpdating, text, setText }:
                     <input type="file" id='image' className='hidden' onChange={submitPicture} />
                 </>
                 :
-                <X onClick={() => { setIsUpdating("") }} className='cursor-pointer' />
+                <X onClick={handleclearstate} className='cursor-pointer' />
             }
-            <button type='submit' className='cursor-pointer' disabled={isSending}><Send className={isSending?'opacity-70':'opacity-100'}/></button>
+            <button type='submit' className='cursor-pointer' disabled={isSending}><Send className={isSending ? 'opacity-70' : 'opacity-100'} /></button>
         </form>
     )
 }

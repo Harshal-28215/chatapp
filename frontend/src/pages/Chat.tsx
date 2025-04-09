@@ -34,7 +34,7 @@ function Chat() {
 
 
     return (
-        <main className='bg-[#020132] w-full sm:relative absolute'>
+        <main className='bg-[#020132] w-full sm:relative absolute h-[calc(100vh-56px)] sm:h-auto'>
             {isLoading ? <div className="h-[76px] flex justify-center items-center"><p>Loading...</p></div> : <ChatHeader data={data?.data} />}
 
             {!isLoading &&

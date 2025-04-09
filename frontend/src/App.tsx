@@ -10,6 +10,7 @@ import { useUserInfo } from "./hooks/UserInfo";
 import { useMyContext } from "./context/chatappContext";
 import HomeLoading from "./components/Loading/HomeLoading";
 import { useEffect } from "react";
+import "./App.css";
 
 function App() {
   const { data, error, isLoading } = useUserInfo();

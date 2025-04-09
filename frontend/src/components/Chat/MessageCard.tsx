@@ -13,7 +13,7 @@ type MessageCardProps = {
 }
 
 function MessageCard({ message, recieverImage, senderImage, id, setIsUpdating, setText }: MessageCardProps) {
-console.log(recieverImage);
+    console.log(recieverImage);
 
     const updateMessage = async () => {
         setIsUpdating(message._id)
@@ -32,7 +32,7 @@ console.log(recieverImage);
         <>
             <div className={`flex items-start gap-3 ${message?.receiverId === id ? 'flex-row-reverse' : 'flex-row'} group`} key={message?._id}>
                 <div className="relative w-[30px] h-[30px]">
-                    <img src={message?.receiverId === id && senderImage ? senderImage : recieverImage ? recieverImage : "/profile.png"} alt="profile" className='w-full h-full object-cover rounded-full' />
+                    <img src={message?.receiverId === id ? (senderImage || "/profile.png") : (recieverImage || "/profile.png")} alt="profile" className='w-full h-full object-cover rounded-full' />
                 </div>
                 <div className="bg-[#010018] p-2 rounded-md relative flex flex-col gap-2">
                     {
@@ -44,9 +44,9 @@ console.log(recieverImage);
                     <p>{message?.text}</p>
                 </div>
                 {message?.receiverId === id &&
-                    <div className={`flex gap-2 group-hover:opacity-100 opacity-0 transition-opacity duration-300`}>
-                        <Edit2 size={15} onClick={updateMessage} />
-                        <TrashIcon size={15} onClick={deleteMessage} />
+                    <div className='icon flex gap-2'>
+                        <Edit2 size={15} className='cursor-pointer' onClick={updateMessage} />
+                        <TrashIcon size={15} className='cursor-pointer' onClick={deleteMessage} />
                     </div>
                 }
             </div>
