@@ -1,4 +1,3 @@
-import { useMyContext } from '@/context/chatappContext';
 import { ImageUp, Send, X } from 'lucide-react';
 import React, { useState } from 'react'
 import { useParams } from 'react-router';
@@ -16,7 +15,7 @@ function ChatForm({ setImageLoading, isUpdating, setIsUpdating, text, setText }:
 
     const [selectedFile, setSelectedFile] = useState<string>("")
     const [file, setFile] = useState<File | null>(null)
-    const { setMessages } = useMyContext();    
+    const [isSending, setIsSending] = useState(false)
     
     const params = useParams();
     const id = params.id;
@@ -46,6 +45,9 @@ function ChatForm({ setImageLoading, isUpdating, setIsUpdating, text, setText }:
     const handleformSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
 
+        if (!text.trim() && !file) return;
+        if(isSending) return;
+
         const formdata = new FormData();
         formdata.append("text", text);
 
@@ -54,6 +56,7 @@ function ChatForm({ setImageLoading, isUpdating, setIsUpdating, text, setText }:
 
         if (isUpdating) {
             try {
+                setIsSending(true)
                 const response = await fetch(`${url}chat/updatemessage/${isUpdating}/${id}`, {
                     method: "PUT",
                     headers: { "Content-Type": "application/json" },
@@ -70,26 +73,31 @@ function ChatForm({ setImageLoading, isUpdating, setIsUpdating, text, setText }:
             } finally {
                 setIsUpdating("")
                 setText("")
+                setFile(null)
+                setSelectedFile("")
+                setIsSending(false)
             }
         } else {
 
             try {
                 setImageLoading(true)
+                setIsSending(true)
                 const response = await fetch(`${url}chat/sendmessage/${id}`, {
                     method: "POST",
                     credentials: "include",
                     body: formdata
                 })
-                const data = await response.json();
+                // const data = await response.json();
                 if (response.ok) {
                     setText("")
                     setSelectedFile("")
-                    setMessages(prevmessage => [...prevmessage, data.data])
+                    setFile(null)
                 }
             } catch (error) {
                 console.log('error')
             } finally {
                 setImageLoading(false)
+                setIsSending(false)
             }
         }
     }
@@ -112,7 +120,7 @@ function ChatForm({ setImageLoading, isUpdating, setIsUpdating, text, setText }:
                 :
                 <X onClick={() => { setIsUpdating("") }} className='cursor-pointer' />
             }
-            <button type='submit' className='cursor-pointer'><Send /></button>
+            <button type='submit' className='cursor-pointer' disabled={isSending}><Send className={isSending?'opacity-70':'opacity-100'}/></button>
         </form>
     )
 }

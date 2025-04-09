@@ -22,8 +22,8 @@ interface ContextProps {
   socketexist?: Socket | null;
   setSocketexist: (socket: Socket | null) => void;
 
-  messages: messageType[];
-  setMessages: (messages: messageType[] | ((prevMessages: messageType[]) => messageType[])) => void;
+  // messages: messageType[];
+  // setMessages: (messages: messageType[] | ((prevMessages: messageType[]) => messageType[])) => void;
 
   isOpen: boolean;
   setIsOpen: (isOpen: boolean) => void;
@@ -44,8 +44,8 @@ const defaultContext: ContextProps = {
   socketexist: null,
   setSocketexist: () => { },
 
-  messages: [],
-  setMessages: () => { },
+  // messages: [],
+  // setMessages: () => { },
 
   isOpen: false,
   setIsOpen: () => { },
@@ -62,7 +62,7 @@ export const MyProvider: React.FC<{ children: ReactNode }> = ({ children }): JSX
 
   const [socketexist, setSocketexist] = useState(defaultContext.socketexist);
   const [onlineUsers, setOnlineUsers] = useState(defaultContext.onlineUsers);
-  const [messages, setMessages] = useState(defaultContext.messages);
+  // const [messages, setMessages] = useState(defaultContext.messages);
   const [isOpen, setIsOpen] = useState(false);
   const [messageIds, setMessageIds] = useState<string[]>([]);
   const messageRef = useRef<Map<string, messageType | null>>(new Map())
@@ -120,8 +120,8 @@ export const MyProvider: React.FC<{ children: ReactNode }> = ({ children }): JSX
     setOnlineUsers,
     socketexist,
     setSocketexist,
-    messages,
-    setMessages,
+    // messages,
+    // setMessages,
     isOpen,
     setIsOpen,
     messageIds,

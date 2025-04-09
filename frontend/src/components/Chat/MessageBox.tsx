@@ -1,4 +1,3 @@
-import { messageType } from "@/context/chatappContext";
 import { useEffect, useRef } from "react"
 import { useParams } from "react-router";
 import MessageCard from "./MessageCard";
@@ -26,9 +25,6 @@ function MessageBox({ recieverImage, senderImage, isMessageLoading, setIsUpdatin
     useEffect(() => {
         scrollToBottom()
     }, [messageIds]);
-
-
-    isLoading && <div className="h-[100vh] relative flex justify-center items-center"><p>Loading...</p></div>
 
     return (
         <div className='p-3 space-y-2 h-[calc(100vh-196px)] overflow-y-auto'>

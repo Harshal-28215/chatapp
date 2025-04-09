@@ -14,7 +14,6 @@ function Chat() {
     const [isUpdating, setIsUpdating] = useState("")
     const [text, setText] = useState<string>("")
 
-
     const url = import.meta.env.VITE_API_URL;;
     const { data, isLoading } = useQuery({
         queryKey: ["chatHeaderUser", id],
@@ -37,7 +36,11 @@ function Chat() {
     return (
         <main className='bg-[#020132] w-full sm:relative absolute'>
             {isLoading ? <div className="h-[76px] flex justify-center items-center"><p>Loading...</p></div> : <ChatHeader data={data?.data} />}
-            <MessageBox recieverImage={data?.data?.profilePic} senderImage={userData?.data?.profilePic} isMessageLoading={isMessageLoading} setIsUpdating={setIsUpdating} setText={setText} />
+
+            {!isLoading &&
+                <MessageBox recieverImage={data?.data?.profilePic} senderImage={userData?.data?.profilePic} isMessageLoading={isMessageLoading} setIsUpdating={setIsUpdating} setText={setText} />
+            }
+
             <ChatForm setImageLoading={setIsMessageLoading} isUpdating={isUpdating} setIsUpdating={setIsUpdating} text={text} setText={setText} />
         </main>
     )

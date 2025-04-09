@@ -1,5 +1,6 @@
 import { messageType } from '@/context/chatappContext'
 import { Edit2, TrashIcon } from 'lucide-react'
+import { memo } from 'react'
 import { Link } from 'react-router'
 
 type MessageCardProps = {
@@ -12,6 +13,7 @@ type MessageCardProps = {
 }
 
 function MessageCard({ message, recieverImage, senderImage, id, setIsUpdating, setText }: MessageCardProps) {
+console.log(recieverImage);
 
     const updateMessage = async () => {
         setIsUpdating(message._id)
@@ -52,4 +54,7 @@ function MessageCard({ message, recieverImage, senderImage, id, setIsUpdating, s
     )
 }
 
-export default MessageCard
+export default memo(MessageCard, (prevProps, nextProps) => {
+    return prevProps.message._id === nextProps.message._id &&
+        prevProps.message.text === nextProps.message.text
+})
