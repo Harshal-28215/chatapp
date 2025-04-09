@@ -7,7 +7,6 @@ import {
   QueryClientProvider,
 } from '@tanstack/react-query'
 import { MyProvider } from './context/chatappContext.tsx'
-import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 
 const queryClient = new QueryClient()
 
@@ -17,7 +16,6 @@ createRoot(document.getElementById('root')!).render(
       <MyProvider>
         <App />
       </MyProvider>
-      {/* <ReactQueryDevtools initialIsOpen={false} /> */}
     </QueryClientProvider>
   </StrictMode>
 )
