@@ -11,6 +11,7 @@ import { useMyContext } from "./context/chatappContext";
 import HomeLoading from "./components/Loading/HomeLoading";
 import { useEffect } from "react";
 import "./App.css";
+import VideoCall from "./pages/VideoCall";
 
 function App() {
   const { data, error, isLoading } = useUserInfo();
@@ -58,6 +59,11 @@ function App() {
         <Route path="/profile" element={
           <ProtectedRoutes message={data?.message} navigate="/login">
             <Profile />
+          </ProtectedRoutes>
+        } />
+        <Route path="/videocall" element={
+          <ProtectedRoutes message={data?.message} navigate="/login">
+            <VideoCall />
           </ProtectedRoutes>
         } />
       </Routes>
