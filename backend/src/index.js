@@ -17,7 +17,7 @@ const __dirname = path.resolve();
 
 app.use(cookieParser());
 app.use(cors({
-  origin: ['http://localhost:5173','https://chatapp-28215.vercel.app',"https://chatappf.onrender.com"],
+  origin: ['http://localhost:5173','https://chatapp-28215.vercel.app', 'https://chat-app-socket-react.vercel.app/',"https://chatappf.onrender.com"],
   credentials: true,
 }));
 
@@ -39,4 +39,5 @@ app.use('/chat', chat_router)
 
 server.listen(port, () => {
   console.log("Server ready on port 5000.");
+
 })
