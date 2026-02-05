@@ -7,7 +7,7 @@ const server = http.createServer(app);
 
 const io = new Server(server, {
     cors: {
-        origin: ["http://localhost:5173", 'https://chatapp-28215.vercel.app', "https://chatappf.onrender.com"]
+        origin: ["http://localhost:5173", 'https://chatapp-28215.vercel.app','https://chat-app-socket-react.vercel.app/', "https://chatappf.onrender.com"]
     }
 })
 
@@ -64,6 +64,7 @@ io.on("connection", (socket) => {
     });
 
 });
+
 
 
 export { io, server, app };
